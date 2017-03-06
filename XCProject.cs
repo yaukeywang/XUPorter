@@ -708,9 +708,12 @@ namespace UnityEditor.XCodeEditor
 		public void ApplyMod( string pbxmod )
 		{
 			XCMod mod = new XCMod( pbxmod );
-			foreach(var lib in mod.libs){
-				Debug.Log("Library: "+lib);
-			}
+            if (null != mod.libs) {
+                foreach(var lib in mod.libs) {
+                    Debug.Log("Library: " + lib);
+                }
+            }
+
 			ApplyMod( mod );
 		}
 		

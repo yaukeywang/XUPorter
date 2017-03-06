@@ -29,11 +29,14 @@ namespace UnityEditor.XCodeEditor
 		public ArrayList libs {
 			get {
 				if( _libs == null ) {
-					_libs = new ArrayList( ((ArrayList)_datastore["libs"]).Count );
-					foreach( string fileRef in (ArrayList)_datastore["libs"] ) {
-						Debug.Log("Adding to Libs: "+fileRef);
-						_libs.Add( new XCModFile( fileRef ) );
-					}
+                    ArrayList allLibs = (ArrayList)_datastore["libs"];
+                    if (null != allLibs) {
+                        _libs = new ArrayList(allLibs.Count);
+                        foreach (string fileRef in allLibs) {
+    						Debug.Log("Adding to Libs: "+fileRef);
+    						_libs.Add( new XCModFile( fileRef ) );
+    					}
+                    }
 				}
 				return _libs;
 			}
