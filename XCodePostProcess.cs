@@ -13,7 +13,11 @@ public static class XCodePostProcess
 	[PostProcessBuild(999)]
 	public static void OnPostProcessBuild( BuildTarget target, string pathToBuiltProject )
 	{
-		if (target != BuildTarget.iPhone) {
+#if UNITY_5
+		if (target != BuildTarget.iOS) {
+#else
+        if (target != BuildTarget.iPhone) {
+#endif
 			Debug.LogWarning("Target is not iPhone. XCodePostProcess will not run");
 			return;
 		}
@@ -29,6 +33,10 @@ public static class XCodePostProcess
 			project.ApplyMod( file );
 		}
 
+        //TODO disable the bitcode for iOS 9.
+        project.overwriteBuildSetting("ENABLE_BITCODE", "NO", "Release");
+        project.overwriteBuildSetting("ENABLE_BITCODE", "NO", "Debug");
+
 		//TODO implement generic settings as a module option
 		project.overwriteBuildSetting("CODE_SIGN_IDENTITY[sdk=iphoneos*]", "iPhone Distribution", "Release");
 		
@@ -40,6 +48,6 @@ public static class XCodePostProcess
 
 	public static void Log(string message)
 	{
-		UnityEngine.Debug.Log("PostProcess: "+message);
+		UnityEngine.Debug.Log("PostProcess: " + message);
 	}
 }
