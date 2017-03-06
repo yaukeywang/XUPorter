@@ -87,6 +87,12 @@ namespace UnityEditor.XCodeEditor
 			}
 		}
 
+		public Hashtable capabilities {
+            get {
+                return (Hashtable)_datastore["capabilities"];
+            }
+        }
+
 		public Hashtable plist {
 			get {
 				return (Hashtable)_datastore["plist"];

@@ -333,6 +333,14 @@ namespace UnityEditor.XCodeEditor
 		{
 			return _objects[guid];
 		}
+
+		public void AddSystemCapabilities(Hashtable capabilities) {
+
+			XCProjectSystemCapabilities systemCapabilities = XCProjectSystemCapabilities.createWithProject(_project);
+            foreach (DictionaryEntry entry in capabilities) {
+                systemCapabilities.visitAddSystemCapabilities((string)entry.Key, (bool)entry.Value);
+            }
+		}
 		
 		public PBXDictionary AddFile( string filePath, PBXGroup parent = null, string tree = "SOURCE_ROOT", bool createBuildFiles = true, bool weak = false )
 		{
@@ -785,6 +793,11 @@ namespace UnityEditor.XCodeEditor
     			foreach( string flag in mod.linker_flags ) {
     				this.AddOtherLinkerFlags( flag );
     			}
+            }
+
+            if (null != mod.capabilities) {
+                Debug.Log("Adding capabilities...");
+                AddSystemCapabilities(mod.capabilities);
             }
 
             if (null != mod.plist) {
