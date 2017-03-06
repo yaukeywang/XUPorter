@@ -255,6 +255,19 @@ namespace UnityEditor.XCodeEditor
 			return modified;	
 		}
 
+        public bool AddOtherLinkerFlagsWithForceLoad(string absoluteFilePath){
+            if (!File.Exists(absoluteFilePath)) {
+                return false;
+            }
+
+            AddOtherLinkerFlags ("-force_load");
+            System.Uri fileURI = new System.Uri( absoluteFilePath );
+            System.Uri rootURI = new System.Uri( ( projectRootPath + "/." ) );
+            string relativeFilePath = rootURI.MakeRelativeUri( fileURI ).ToString();
+
+            return AddOtherLinkerFlags (relativeFilePath);
+        }
+
 		public bool AddOtherLinkerFlags( string flag )
 		{
 			return AddOtherLinkerFlags( new PBXList( flag ) ); 
