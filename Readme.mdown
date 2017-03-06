@@ -47,7 +47,7 @@ One example, the following file will add all files in /iOS/KKKeychain to the Xco
     "embed_binaries": [],
     "capabilities" : {
         "ApplePay" : true,
-        "GameCenter" : true,
+        "GameCenter" : true
     },
     "plist": {
         "urltype" : [

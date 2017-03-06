@@ -1,11 +1,9 @@
 {
     "group": "Store",
-    "libs": [],
-    "frameworks": ["StoreKit.framework"],
-    "headerpaths": [],                    
+    "frameworks": ["StoreKit.framework"],                  
     "files":   ["iOS/Store/libStoreKit.a"],
-    "folders": [],    
     "excludes": ["^.*.meta$", "^.*.mdown$", "^.*.pdf$"],
-    "compiler_flags": [],
-    "linker_flags": []
+    "plist": {
+        "CFBundleDevelopmentRegion" : "zh_CN"
+    },
 }

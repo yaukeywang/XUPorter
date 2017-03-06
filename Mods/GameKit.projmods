@@ -9,5 +9,23 @@
     "folders": [],    
     "excludes": ["^.*.meta$", "^.*.mdown$", "^.*.pdf$"],
     "compiler_flags": [],
-    "linker_flags": []
+    "linker_flags": [],
+    "capabilities" : {
+        "ApplePay" : true,
+        "AppGroups" : true,
+        "DataProtection" : false
+    },
+    "plist": {
+        "urltype" : [
+            {
+                "role": "Editor",
+                "name" : "wechat",
+                "schemes":["wxyz123456789"]
+            },
+            {
+                "name" : "twitter",
+                "schemes":["www1234566"]
+            }
+        ],
+    },
 }

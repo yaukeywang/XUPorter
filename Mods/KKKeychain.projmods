@@ -3,7 +3,7 @@
     "libs": [],
     "frameworks": ["Security.framework"],
     "headerpaths": [],
-    "files":   [],
+    "files": [],
     "folders": ["iOS/KKKeychain/"],    
     "excludes": ["^.*.meta$", "^.*.mdown$", "^.*.pdf$"],
     "compiler_flags": [],
