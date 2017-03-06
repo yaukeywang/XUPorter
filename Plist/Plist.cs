@@ -298,12 +298,23 @@ namespace PlistCS
             return array;
         }
 
-        private static void composeArray(List<object> value, XmlWriter writer)
+        private static void composeArray(IList<object> value, XmlWriter writer)
         {
             writer.WriteStartElement("array");
             foreach (object obj in value)
             {
                 compose(obj, writer);
+            }
+            writer.WriteEndElement();
+        }
+
+        private static void composeHashtable(Hashtable value, XmlWriter writer)
+        {
+            writer.WriteStartElement("dict");
+            foreach (DictionaryEntry entry in value)
+            {
+                writer.WriteElementString("key", entry.Key.ToString());
+                compose(entry.Value, writer);
             }
             writer.WriteEndElement();
         }
@@ -366,9 +377,13 @@ namespace PlistCS
                 }
                 writeDictionaryValues(dic, writer);
             }
-            else if (value is List<object>)
+            else if (value is Hashtable)
             {
-                composeArray((List<object>)value, writer);
+                composeHashtable((Hashtable)value, writer);
+            }
+            else if (value is IList<object>)
+            {
+                composeArray((IList<object>)value, writer);
             }
             else if (value is byte[])
             {

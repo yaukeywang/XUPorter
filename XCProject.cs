@@ -710,32 +710,37 @@ namespace UnityEditor.XCodeEditor
 		{	
 			PBXGroup modGroup = this.GetGroup( mod.group );
 			
-			Debug.Log( "Adding libraries..." );
+            if (null != mod.libs){
+                Debug.Log( "Adding libraries..." );
+    			foreach( XCModFile libRef in mod.libs ) {
+    				string completeLibPath = System.IO.Path.Combine( "usr/lib", libRef.filePath );
+    				Debug.Log ("Adding library " + completeLibPath);
+    				this.AddFile( completeLibPath, modGroup, "SDKROOT", true, libRef.isWeak );
+    			}
+            }
 			
-			foreach( XCModFile libRef in mod.libs ) {
-				string completeLibPath = System.IO.Path.Combine( "usr/lib", libRef.filePath );
-				Debug.Log ("Adding library " + completeLibPath);
-				this.AddFile( completeLibPath, modGroup, "SDKROOT", true, libRef.isWeak );
-			}
+            if (null != mod.frameworks) {
+    			Debug.Log( "Adding frameworks..." );
+    			PBXGroup frameworkGroup = this.GetGroup( "Frameworks" );
+    			foreach( string framework in mod.frameworks ) {
+    				string[] filename = framework.Split( ':' );
+    				bool isWeak = ( filename.Length > 1 ) ? true : false;
+    				string completePath = System.IO.Path.Combine( "System/Library/Frameworks", filename[0] );
+    				this.AddFile( completePath, frameworkGroup, "SDKROOT", true, isWeak );
+    			}
+            }
+
+            if (null != mod.files) {
+    			Debug.Log( "Adding files..." );
+    			foreach( string filePath in mod.files ) {
+    				string absoluteFilePath = System.IO.Path.Combine( mod.path, filePath );
+    				this.AddFile( absoluteFilePath, modGroup );
+    			}
+            }
+
 			
-			Debug.Log( "Adding frameworks..." );
-			PBXGroup frameworkGroup = this.GetGroup( "Frameworks" );
-			foreach( string framework in mod.frameworks ) {
-				string[] filename = framework.Split( ':' );
-				bool isWeak = ( filename.Length > 1 ) ? true : false;
-				string completePath = System.IO.Path.Combine( "System/Library/Frameworks", filename[0] );
-				this.AddFile( completePath, frameworkGroup, "SDKROOT", true, isWeak );
-			}
-
-			Debug.Log( "Adding files..." );
-			foreach( string filePath in mod.files ) {
-				string absoluteFilePath = System.IO.Path.Combine( mod.path, filePath );
-				this.AddFile( absoluteFilePath, modGroup );
-			}
-
-			Debug.Log( "Adding embed binaries..." );
-			if (mod.embed_binaries != null)
-			{
+			if (null != mod.embed_binaries) {
+                Debug.Log( "Adding embed binaries..." );
 				//1. Add LD_RUNPATH_SEARCH_PATHS for embed framework
 				this.overwriteBuildSetting("LD_RUNPATH_SEARCH_PATHS", "$(inherited) @executable_path/Frameworks", "Release");
 				this.overwriteBuildSetting("LD_RUNPATH_SEARCH_PATHS", "$(inherited) @executable_path/Frameworks", "Debug");
@@ -746,38 +751,48 @@ namespace UnityEditor.XCodeEditor
 				}
 			}
 			
-			Debug.Log( "Adding folders..." );
-			foreach( string folderPath in mod.folders ) {
-				string absoluteFolderPath = System.IO.Path.Combine( Application.dataPath, folderPath );
-				Debug.Log ("Adding folder " + absoluteFolderPath);
-				this.AddFolder( absoluteFolderPath, modGroup, (string[])mod.excludes.ToArray( typeof(string) ) );
-			}
+            if (null != mod.folders) {
+    			Debug.Log( "Adding folders..." );
+    			foreach( string folderPath in mod.folders ) {
+    				string absoluteFolderPath = System.IO.Path.Combine( Application.dataPath, folderPath );
+    				Debug.Log ("Adding folder " + absoluteFolderPath);
+    				this.AddFolder( absoluteFolderPath, modGroup, (string[])mod.excludes.ToArray( typeof(string) ) );
+    			}
+            }
 			
-			Debug.Log( "Adding headerpaths..." );
-			foreach( string headerpath in mod.headerpaths ) {
-				if (headerpath.Contains("$(inherited)")) {
-					Debug.Log ("not prepending a path to " + headerpath);
-					this.AddHeaderSearchPaths( headerpath );
-				} else {
-					string absoluteHeaderPath = System.IO.Path.Combine( mod.path, headerpath );
-					this.AddHeaderSearchPaths( absoluteHeaderPath );
-				}
-			}
+            if (null != mod.headerpaths) {
+    			Debug.Log( "Adding headerpaths..." );
+    			foreach( string headerpath in mod.headerpaths ) {
+    				if (headerpath.Contains("$(inherited)")) {
+    					Debug.Log ("not prepending a path to " + headerpath);
+    					this.AddHeaderSearchPaths( headerpath );
+    				} else {
+    					string absoluteHeaderPath = System.IO.Path.Combine( mod.path, headerpath );
+    					this.AddHeaderSearchPaths( absoluteHeaderPath );
+    				}
+    			}
+            }
 
-			Debug.Log( "Adding compiler flags..." );
-			foreach( string flag in mod.compiler_flags ) {
-				this.AddOtherCFlags( flag );
-			}
+            if (null != mod.compiler_flags) {
+    			Debug.Log( "Adding compiler flags..." );
+    			foreach( string flag in mod.compiler_flags ) {
+    				this.AddOtherCFlags( flag );
+    			}
+            }
 
-			Debug.Log( "Adding linker flags..." );
-			foreach( string flag in mod.linker_flags ) {
-				this.AddOtherLinkerFlags( flag );
-			}
+            if (null != mod.linker_flags) {
+    			Debug.Log( "Adding linker flags..." );
+    			foreach( string flag in mod.linker_flags ) {
+    				this.AddOtherLinkerFlags( flag );
+    			}
+            }
 
-			Debug.Log ("Adding plist items...");
-			string plistPath = this.projectRootPath + "/Info.plist";
-			XCPlist plist = new XCPlist (plistPath);
-			plist.Process(mod.plist);
+            if (null != mod.plist) {
+    			Debug.Log ("Adding plist items...");
+    			string plistPath = this.projectRootPath + "/Info.plist";
+    			XCPlist plist = new XCPlist (plistPath);
+    			plist.Process(mod.plist);
+            }
 
 			this.Consolidate();
 		}
