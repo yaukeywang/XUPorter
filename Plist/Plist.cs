@@ -308,6 +308,16 @@ namespace PlistCS
             writer.WriteEndElement();
         }
 
+        private static void composeArray(IList value, XmlWriter writer)
+        {
+            writer.WriteStartElement("array");
+            foreach (object obj in value)
+            {
+                compose(obj, writer);
+            }
+            writer.WriteEndElement();
+        }
+
         private static void composeHashtable(Hashtable value, XmlWriter writer)
         {
             writer.WriteStartElement("dict");
@@ -384,6 +394,10 @@ namespace PlistCS
             else if (value is IList<object>)
             {
                 composeArray((IList<object>)value, writer);
+            }
+            else if (value is IList)
+            {
+                composeArray((IList)value, writer);
             }
             else if (value is byte[])
             {
